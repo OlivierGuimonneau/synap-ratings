@@ -1,7 +1,6 @@
 # Copilot repository instructions
 
-Tu travailles sur un projet web d'entreprise décliné en deux sites:
-- `www.synapflows.fr`: site vitrine principal avec formulaires liés à Airtable
+Tu travailles sur un projet web d'entreprise :
 - `www.synap-ratings.com`: landing page de capture utilisant la même structure visuelle et la même base technique
 
 ## Priorités produit
