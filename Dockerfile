@@ -1,10 +1,12 @@
 # Stage 1: Build frontend
 FROM node:20-alpine AS frontend-builder
+ARG VITE_RECAPTCHA_SITE_KEY
+ARG VITE_RECAPTCHA_ACTION
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm ci
 COPY frontend/ ./
-RUN npm run build
+RUN VITE_RECAPTCHA_SITE_KEY=${VITE_RECAPTCHA_SITE_KEY} VITE_RECAPTCHA_ACTION=${VITE_RECAPTCHA_ACTION} npm run build
 
 # Stage 2: Build backend
 FROM node:20-alpine AS backend-builder

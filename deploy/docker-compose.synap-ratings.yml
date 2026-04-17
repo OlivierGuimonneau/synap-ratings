@@ -3,6 +3,9 @@ services:
     build:
       context: ..
       dockerfile: Dockerfile
+      args:
+        VITE_RECAPTCHA_SITE_KEY: ${VITE_RECAPTCHA_SITE_KEY}
+        VITE_RECAPTCHA_ACTION: ${VITE_RECAPTCHA_ACTION}
     container_name: synapratings-www
     restart: unless-stopped
     env_file:
