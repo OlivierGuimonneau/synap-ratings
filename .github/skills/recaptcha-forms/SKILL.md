@@ -1,79 +1,65 @@
 ---
 name: recaptcha-forms
-description: Protège les formulaires publics avec Google reCAPTCHA v3 pour React/Vite + Express + Airtable.
+description: Implémente des formulaires publics avec reCAPTCHA v3, validation serveur, contrôle du score, action explicite et UX de soumission robuste.
 ---
 
 # reCAPTCHA forms skill
 
-Cette skill s'applique à tous les formulaires publics de `www.synap-ratings.com`.
+Utiliser cette skill quand une feature implique :
+- un formulaire public
+- une prise de contact
+- une capture de lead
+- un endpoint exposé à des soumissions externes
+- une intégration reCAPTCHA v3
 
 ## Objectif
-Réduire le spam et les abus sur les formulaires publics sans exposer les secrets ni casser la conversion.
+- Réduire le spam et les soumissions abusives.
+- Préserver une expérience utilisateur fluide.
+- Garantir que la validation finale se fait toujours côté serveur.
 
-## Règles globales
-- Utiliser Google reCAPTCHA v3 sur tous les formulaires publics.
-- Le frontend utilise uniquement `RECAPTCHA_SITE_KEY`.
-- Le backend vérifie toujours le token auprès de Google avant tout traitement.
-- Si la vérification échoue, ne pas écrire dans Airtable.
-- Les clés reCAPTCHA proviennent uniquement des variables d'environnement.
-
-## Variables attendues
-
-### Frontend
-- `VITE_RECAPTCHA_SITE_KEY`
-
-### Backend
-- `RECAPTCHA_SECRET_KEY`
-- `RECAPTCHA_EXPECTED_ACTION`
-- `RECAPTCHA_MIN_SCORE`
-- `APP_DOMAIN`
-
-## Pattern frontend attendu
-- Charger reCAPTCHA côté client.
-- Exécuter reCAPTCHA juste avant le submit avec une action explicite, par exemple `submit_lead`.
-- Ajouter `recaptchaToken` au payload envoyé au backend.
-- Gérer proprement les cas:
-  - script non chargé
-  - token absent
-  - erreur de soumission
-  - succès
-
-## Pattern backend attendu
-- Lire `recaptchaToken` depuis le body.
-- Appeler `https://www.google.com/recaptcha/api/siteverify` côté serveur avec:
-  - `secret`
-  - `response`
-- Vérifier au minimum:
+## Principes
+- reCAPTCHA v3 se déclenche côté frontend juste avant la soumission.
+- Le token obtenu est transmis au backend avec les autres données du formulaire.
+- Le backend vérifie obligatoirement le token auprès de Google.
+- Le backend contrôle au minimum :
   - `success`
   - `score`
   - `action`
-  - `hostname`
-- Rejeter la requête si un des contrôles échoue.
-- N'appeler Airtable qu'après validation reCAPTCHA réussie.
+- Le backend décide ensuite d'accepter, rejeter ou traiter différemment la soumission.
 
-## Contrat de validation recommandé
-- `action` attendue: `submit_lead`
-- `score` minimum par défaut: `0.5`
-- `hostname` doit correspondre à `www.synap-ratings.com` selon l'environnement
+## Règles frontend
+- Utiliser uniquement la clé publique côté client.
+- Ne jamais exposer la clé secrète côté frontend.
+- Générer le token juste avant l'action utilisateur concernée, pas au chargement initial de la page.
+- Utiliser une `action` explicite, par exemple `submit_lead` ou `contact_form_submit`.
+- Gérer proprement le cas où reCAPTCHA n'est pas encore prêt ou échoue.
+- Ne pas soumettre silencieusement un formulaire protégé sans token valide.
 
-## Structure backend recommandée
-- `middleware/` ou `services/recaptcha/verifyRecaptcha.ts`
-- `controllers/leadController.ts` reste mince
-- `services/leadService.ts` ne doit être appelé qu'après validation reCAPTCHA
+## Règles backend
+- Vérifier le token sur le serveur avant tout traitement sensible.
+- Comparer l'action reçue avec l'action attendue.
+- Interpréter le score selon la politique du projet.
+- Rejeter proprement les soumissions invalides ou suspectes.
+- Ne jamais considérer la seule présence d'un token comme suffisante.
+- Compléter reCAPTCHA par les autres garde-fous du projet : validation, rate limiting, logs sobres, filtrage anti-abus.
+
+## UX de formulaire
+- Préserver une expérience simple et claire.
+- Afficher un état de soumission compréhensible.
+- Afficher un message d'erreur sobre si la vérification échoue.
+- Ne pas perdre la saisie utilisateur en cas d'échec.
+- Garder la friction minimale tant que le backend considère la soumission acceptable.
 
 ## Sécurité
-- Ne jamais exposer `RECAPTCHA_SECRET_KEY`
-- Ne jamais faire confiance à la validation frontend seule
-- Ne jamais logger les secrets
-- Ne jamais accepter une soumission sans `recaptchaToken`
-- Ne jamais bypasser reCAPTCHA sur un endpoint public en production
+- Tous les secrets restent côté serveur.
+- Ne pas logger les secrets.
+- Ne pas exposer de détails techniques sensibles au frontend.
+- Utiliser HTTPS.
+- Toute validation frontend reste purement complémentaire.
 
-## Réponse d'erreur recommandée
-- `400` si token absent ou payload invalide
-- `403` si reCAPTCHA échoue
-- message utilisateur sobre, sans détail interne
+## Maintenabilité
+- Mutualiser la logique reCAPTCHA si plusieurs formulaires utilisent le même pattern.
+- Centraliser si possible la vérification serveur dans une fonction dédiée.
+- Documenter les variables d'environnement et les seuils utilisés si le flux devient central.
 
-## Notes d'implémentation
-- Si le score est trop bas, bloquer ou demander un fallback manuel selon la stratégie produit.
-- Pour une landing page très exposée, surveiller les scores en production et ajuster `RECAPTCHA_MIN_SCORE`.
-- Vérifier que l'action reCAPTCHA envoyée par le frontend correspond exactement à celle attendue côté backend.
+Consulter `flow.md` pour le déroulé détaillé du flux de soumission.
