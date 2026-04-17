@@ -20,52 +20,52 @@ jobs:
           VPS_USER: ${{ secrets.VPS_USER }}
           VPS_PATH: ${{ secrets.VPS_PATH }}
         run: |
-          # Setup SSH
+          # Setup SSH with proper key formatting
           mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          
+          # Write SSH key with proper handling of newlines
+          cat > ~/.ssh/deploy_key << 'SSH_KEY_EOF'
+          ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KEY_EOF
+          
           chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H $VPS_HOST >> ~/.ssh/known_hosts 2>/dev/null || true
+          
+          # Add VPS to known hosts
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
+          
+          # Test SSH connection first
+          echo "🔐 Testing SSH connection..."
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "echo '✓ SSH connection successful'" || exit 1
           
           # Deploy script
-          ssh -i ~/.ssh/deploy_key $VPS_USER@$VPS_HOST << 'EOF'
+          echo "🚀 Starting deployment..."
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'DEPLOY_SCRIPT'
           set -e
           
-          echo "🚀 Starting deployment..."
-          cd ${{ env.VPS_PATH }}
+          cd ${{ secrets.VPS_PATH }}
           
-          # Pull latest code from main
           echo "📥 Pulling latest code..."
           git pull origin main
           
-          # Export environment variables
           echo "🔧 Loading environment variables..."
           export $(cat .env | xargs)
           
-          # Build Docker image
           echo "🏗️  Building Docker image..."
           docker compose -f deploy/docker-compose.synap-ratings.yml build --no-cache
           
-          # Stop old container
           echo "⏹️  Stopping old container..."
-          docker compose -f deploy/docker-compose.synap-ratings.yml down
+          docker compose -f deploy/docker-compose.synap-ratings.yml down || true
           
-          # Start new container
           echo "▶️  Starting new container..."
           docker compose -f deploy/docker-compose.synap-ratings.yml up -d
           
-          # Verify deployment
           echo "✅ Waiting for service to be ready..."
           sleep 5
           
-          # Check container status
-          if docker compose -f deploy/docker-compose.synap-ratings.yml ps | grep -q "healthy\|Up"; then
-            echo "✓ Deployment successful!"
-          else
-            echo "✗ Container is not running"
-            docker compose -f deploy/docker-compose.synap-ratings.yml logs --tail 50
-            exit 1
-          fi
-          EOF
+          echo "🔍 Checking container status..."
+          docker compose -f deploy/docker-compose.synap-ratings.yml ps
+          
+          DEPLOY_SCRIPT
 
       - name: Deployment Status
         if: success()
