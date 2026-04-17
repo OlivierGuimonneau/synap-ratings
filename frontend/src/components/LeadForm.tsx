@@ -85,15 +85,20 @@ export function LeadForm() {
         return;
       }
 
-      // Construire le payload avec validation du formulaire
-      const form = event.currentTarget;
-      if (!(form instanceof HTMLFormElement)) {
-        throw new Error('Invalid form element');
-      }
-      
-      const formData = new FormData(form);
+      // Construire le payload directement depuis les inputs
+      const form = event.currentTarget as HTMLFormElement;
+      const firstName = (form.elements.namedItem('firstName') as HTMLInputElement)?.value || '';
+      const lastName = (form.elements.namedItem('lastName') as HTMLInputElement)?.value || '';
+      const email = (form.elements.namedItem('email') as HTMLInputElement)?.value || '';
+      const company = (form.elements.namedItem('company') as HTMLInputElement)?.value || '';
+      const phone = (form.elements.namedItem('phone') as HTMLInputElement)?.value || '';
+
       const payload = {
-        ...Object.fromEntries(formData.entries()),
+        firstName,
+        lastName,
+        email,
+        company,
+        phone,
         recaptchaToken,
       };
 

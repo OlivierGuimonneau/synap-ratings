@@ -6,11 +6,11 @@ export function securityHeaders(_req: Request, res: Response, next: NextFunction
   // CSP for reCAPTCHA Enterprise and secure defaults
   const csp = [
     "default-src 'self'",
-    "script-src 'self' https://www.google.com https://gstatic.com",
+    "script-src 'self' https://www.google.com https://*.gstatic.com",
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: https:",
     "font-src 'self' https:",
-    "connect-src 'self' https://www.google.com https://gstatic.com https://recaptchaenterprise.googleapis.com",
+    "connect-src 'self' https://www.google.com https://*.gstatic.com https://recaptchaenterprise.googleapis.com",
     "frame-src 'self' https://www.google.com",
     "frame-ancestors 'none'",
     "report-uri /api/csp-report"
