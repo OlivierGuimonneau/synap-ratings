@@ -1,0 +1,84 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  VPS_HOST: project.synapflows.fr
+  VPS_USER: root
+  VPS_PORT: 22
+  APP_PATH: /root/synap-ratings
+  DOCKER_COMPOSE_FILE: deploy/docker-compose.synap-ratings.yml
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to VPS
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+        run: |
+          # Setup SSH
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ env.VPS_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
+          
+          # Deploy script
+          ssh -i ~/.ssh/deploy_key -p ${{ env.VPS_PORT }} ${{ env.VPS_USER }}@${{ env.VPS_HOST }} << 'EOF'
+          set -e
+          
+          echo "🚀 Starting deployment..."
+          cd ${{ env.APP_PATH }}
+          
+          # Pull latest code from main
+          echo "📥 Pulling latest code..."
+          git pull origin main
+          
+          # Export environment variables
+          echo "🔧 Loading environment variables..."
+          export $(cat .env | xargs)
+          
+          # Build Docker image
+          echo "🏗️  Building Docker image..."
+          docker compose -f ${{ env.DOCKER_COMPOSE_FILE }} build --no-cache
+          
+          # Stop old container
+          echo "⏹️  Stopping old container..."
+          docker compose -f ${{ env.DOCKER_COMPOSE_FILE }} down
+          
+          # Start new container
+          echo "▶️  Starting new container..."
+          docker compose -f ${{ env.DOCKER_COMPOSE_FILE }} up -d
+          
+          # Verify deployment
+          echo "✅ Waiting for service to be ready..."
+          sleep 5
+          
+          # Check container status
+          if docker compose -f ${{ env.DOCKER_COMPOSE_FILE }} ps | grep -q "healthy\|Up"; then
+            echo "✓ Deployment successful!"
+          else
+            echo "✗ Container is not running"
+            docker compose -f ${{ env.DOCKER_COMPOSE_FILE }} logs --tail 50
+            exit 1
+          fi
+          EOF
+
+      - name: Deployment Status
+        if: success()
+        run: |
+          echo "✅ Deployment completed successfully!"
+          echo "🌐 Check https://www.synap-ratings.com"
+
+      - name: Deployment Failed
+        if: failure()
+        run: |
+          echo "❌ Deployment failed!"
+          echo "Check GitHub Actions logs for details"
