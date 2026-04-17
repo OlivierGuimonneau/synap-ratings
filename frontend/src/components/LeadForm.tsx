@@ -48,6 +48,10 @@ export function LeadForm() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    
+    // Capturer le formulaire AVANT d'appeler du code async
+    const form = event.currentTarget as HTMLFormElement;
+    
     setStatus('loading');
     setErrorMessage('');
 
@@ -86,7 +90,6 @@ export function LeadForm() {
       }
 
       // Construire le payload directement depuis les inputs
-      const form = event.currentTarget as HTMLFormElement;
       const firstName = (form.elements.namedItem('firstName') as HTMLInputElement)?.value || '';
       const lastName = (form.elements.namedItem('lastName') as HTMLInputElement)?.value || '';
       const email = (form.elements.namedItem('email') as HTMLInputElement)?.value || '';
