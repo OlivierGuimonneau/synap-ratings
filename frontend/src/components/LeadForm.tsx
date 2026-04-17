@@ -130,7 +130,7 @@ export function LeadForm() {
       if (response.ok) {
         setStatus('success');
         setErrorMessage('');
-        event.currentTarget.reset();
+        form.reset();
         console.log('Form submitted successfully');
         setTimeout(() => setStatus('idle'), 5000);
       } else {
