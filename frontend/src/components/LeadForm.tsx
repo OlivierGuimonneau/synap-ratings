@@ -85,8 +85,13 @@ export function LeadForm() {
         return;
       }
 
-      // Construire le payload
-      const formData = new FormData(event.currentTarget);
+      // Construire le payload avec validation du formulaire
+      const form = event.currentTarget;
+      if (!(form instanceof HTMLFormElement)) {
+        throw new Error('Invalid form element');
+      }
+      
+      const formData = new FormData(form);
       const payload = {
         ...Object.fromEntries(formData.entries()),
         recaptchaToken,
