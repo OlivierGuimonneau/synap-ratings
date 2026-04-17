@@ -15,6 +15,7 @@ npm install
 npm run dev
 ```
 
+
 Cela lance **frontend et backend en parallèle** :
 - **Frontend** : http://localhost:5000 (Vite avec hot reload)
 - **Backend** : http://localhost:5001 (tsx watch)
