@@ -3,7 +3,9 @@ import { FormEvent, useState, useEffect } from 'react';
 declare global {
   interface Window {
     grecaptcha?: {
-      execute: (siteKey: string, options: { action: string }) => Promise<string>;
+      enterprise?: {
+        execute: (siteKey: string, options: { action: string }) => Promise<string>;
+      };
     };
   }
 }
@@ -15,27 +17,27 @@ export function LeadForm() {
   const isDev = import.meta.env.DEV;
 
   useEffect(() => {
-    // Charger le script reCAPTCHA si on a une clé
+    // Charger le script reCAPTCHA Enterprise si on a une clé
     if (!siteKey) {
       console.warn('reCAPTCHA site key not configured');
       return;
     }
 
     // Vérifier que le script n'est pas déjà chargé
-    if (window.grecaptcha) {
-      console.log('reCAPTCHA already loaded');
+    if (window.grecaptcha?.enterprise) {
+      console.log('reCAPTCHA Enterprise already loaded');
       return;
     }
 
     const script = document.createElement('script');
-    script.src = 'https://www.google.com/recaptcha/api.js';
+    script.src = `https://www.google.com/recaptcha/enterprise.js?render=${siteKey}`;
     script.async = true;
     script.defer = true;
     script.onload = () => {
-      console.log('reCAPTCHA script loaded successfully');
+      console.log('reCAPTCHA Enterprise script loaded successfully');
     };
     script.onerror = () => {
-      console.error('Failed to load reCAPTCHA script');
+      console.error('Failed to load reCAPTCHA Enterprise script');
     };
     document.head.appendChild(script);
 
@@ -53,9 +55,9 @@ export function LeadForm() {
       let recaptchaToken = '';
 
       // Générer le token reCAPTCHA
-      if (window.grecaptcha && siteKey) {
+      if (window.grecaptcha?.enterprise && siteKey) {
         try {
-          recaptchaToken = await window.grecaptcha.execute(siteKey, {
+          recaptchaToken = await window.grecaptcha.enterprise.execute(siteKey, {
             action: import.meta.env.VITE_RECAPTCHA_ACTION || 'submit_lead',
           });
           console.log('reCAPTCHA token generated:', recaptchaToken.substring(0, 20) + '...');
