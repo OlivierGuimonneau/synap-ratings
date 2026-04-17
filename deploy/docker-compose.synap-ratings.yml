@@ -19,7 +19,7 @@ services:
       - "traefik.http.routers.synapratings-www.rule=Host(`www.synap-ratings.com`)"
       - "traefik.http.routers.synapratings-www.entrypoints=websecure"
       - "traefik.http.routers.synapratings-www.tls=true"
-      - "traefik.http.routers.synapratings-www.tls.certresolver=${TRAEFIK_CERTRESOLVER:-letsencrypt}"
+      - "traefik.http.routers.synapratings-www.tls.certresolver=${TRAEFIK_CERTRESOLVER:-myresolver}"
       - "traefik.http.services.synapratings-www.loadbalancer.server.port=5000"
     networks:
       - traefik_shared
