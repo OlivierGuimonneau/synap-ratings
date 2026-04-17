@@ -1,0 +1,28 @@
+{
+  "name": "synap-ratings",
+  "version": "1.0.0",
+  "description": "Landing page with lead capture - Frontend + Backend",
+  "private": true,
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development PORT=5001 concurrently \"npm run dev -w backend\" \"npm run dev -w frontend\"",
+    "build": "npm run build -w backend && npm run build -w frontend",
+    "start": "npm start -w backend",
+    "clean": "rimraf backend/dist frontend/dist backend/node_modules frontend/node_modules node_modules",
+    "setup": "npm install && npm run build",
+    "lint": "npm run lint -w backend",
+    "type-check": "npm run type-check -w backend"
+  },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
+    "rimraf": "^5.0.5"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+}
