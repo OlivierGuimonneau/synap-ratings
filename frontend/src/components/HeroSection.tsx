@@ -17,7 +17,6 @@ export function HeroSection({ headline, tagline, description, ctaText, onCtaClic
     >
       <div className="container">
         <div className="hero-content">
-          <div className="hero-badge">🔥 Obtenez Plus d'Avis 5 Étoiles</div>
           <h1 className="hero-headline">{headline}</h1>
           <p className="hero-tagline">{tagline}</p>
           <p className="hero-description">{description}</p>
