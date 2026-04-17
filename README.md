@@ -9,7 +9,6 @@ Page de capture de leads avec reCAPTCHA v3 intégrée, backend Express et fronte
 ```bash
 npm install
 ```
-
 ### Développement
 
 ```bash
