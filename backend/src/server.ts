@@ -10,6 +10,9 @@ const app = express();
 // Disable Express fingerprinting
 app.disable('x-powered-by');
 
+// Trust proxy (for Traefik reverse proxy)
+app.set('trust proxy', 1);
+
 // Security headers
 app.use(securityHeaders);
 
