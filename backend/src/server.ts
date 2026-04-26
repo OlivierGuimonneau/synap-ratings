@@ -28,11 +28,20 @@ app.use(express.json());
 // API routes
 app.use('/api', routes);
 
+// API 404 handler
+app.use('/api/*', (_req, res) => {
+  res.status(404).json({
+    error: 'Not Found',
+    message: 'The requested API endpoint does not exist',
+    code: 'API_NOT_FOUND',
+  });
+});
+
 // Serve static frontend
 const frontendDistPath = path.resolve(process.cwd(), 'frontend-dist');
 app.use(express.static(frontendDistPath));
 
-// SPA fallback
+// SPA fallback - serve index.html for all non-API routes
 app.get('*', (_req, res) => {
   res.sendFile(path.join(frontendDistPath, 'index.html'));
 });

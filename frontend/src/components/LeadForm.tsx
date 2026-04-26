@@ -146,7 +146,7 @@ export function LeadForm() {
   }
 
   return (
-    <form className="form-card" onSubmit={handleSubmit}>
+    <form className="form-card" onSubmit={handleSubmit} data-form-anchor>
       <h2>Obtenez votre audit gratuit en quelques clics</h2>
       <p className="form-subtitle">
         Analysez votre réputation Google et découvrez comment augmenter vos avis 5 étoiles
