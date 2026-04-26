@@ -1,0 +1,240 @@
+/* ==================== Legal Notice Page Layout ==================== */
+.legal-notice-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg-white);
+}
+
+.legal-notice-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 60px 20px;
+  background: var(--bg-light);
+}
+
+.legal-notice-content {
+  width: 100%;
+  max-width: 900px;
+  background: var(--bg-white);
+  padding: 60px 40px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+/* ==================== Typography ==================== */
+.legal-notice-content h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  padding-bottom: 20px;
+  border-bottom: 3px solid var(--primary);
+}
+
+.legal-notice-content h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+.legal-notice-content h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-top: 25px;
+  margin-bottom: 15px;
+}
+
+.legal-notice-content p {
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin-bottom: 16px;
+  font-size: 1rem;
+}
+
+.legal-notice-content strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* ==================== Header Section ==================== */
+.legal-last-updated-header {
+  color: var(--text-light);
+  font-size: 0.95rem;
+  margin-bottom: 40px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ==================== Sections ==================== */
+.legal-section {
+  margin-bottom: 40px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.legal-section:last-child {
+  border-bottom: none;
+}
+
+/* ==================== Info Box ==================== */
+.legal-info-box {
+  background: var(--bg-neutral);
+  border-left: 4px solid var(--primary);
+  padding: 20px;
+  border-radius: var(--radius);
+  margin: 20px 0;
+}
+
+.legal-info-box p {
+  margin-bottom: 12px;
+}
+
+.legal-info-box p:last-child {
+  margin-bottom: 0;
+}
+
+.legal-info-box ul {
+  margin: 12px 0;
+  padding-left: 20px;
+}
+
+.legal-info-box li {
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+}
+
+/* ==================== Lists ==================== */
+.legal-notice-content ul {
+  padding-left: 24px;
+  margin-bottom: 16px;
+}
+
+.legal-notice-content li {
+  margin-bottom: 12px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+.legal-notice-content li strong {
+  color: var(--text-primary);
+}
+
+.contact-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.contact-list li {
+  margin-bottom: 16px;
+  padding-left: 0;
+}
+
+.contact-list a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.contact-list a:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
+/* ==================== Links in content ==================== */
+.legal-notice-content a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.legal-notice-content a:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
+/* ==================== Copyright Section ==================== */
+.legal-copyright {
+  background: var(--bg-neutral);
+  padding: 20px;
+  border-radius: var(--radius);
+  text-align: center;
+  border-bottom: none;
+  border-left: none;
+  margin-top: 60px;
+}
+
+.legal-copyright p {
+  margin-bottom: 0;
+  color: var(--text-light);
+}
+
+/* ==================== Responsive Design ==================== */
+@media (max-width: 768px) {
+  .legal-notice-container {
+    padding: 40px 16px;
+  }
+
+  .legal-notice-content {
+    padding: 40px 24px;
+  }
+
+  .legal-notice-content h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+
+  .legal-notice-content h2 {
+    font-size: 1.25rem;
+    margin-top: 30px;
+  }
+
+  .legal-notice-content h3 {
+    font-size: 1rem;
+  }
+
+  .legal-notice-content p {
+    font-size: 0.95rem;
+  }
+
+  .legal-last-updated-header {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .legal-notice-container {
+    padding: 30px 12px;
+  }
+
+  .legal-notice-content {
+    padding: 30px 16px;
+  }
+
+  .legal-notice-content h1 {
+    font-size: 1.5rem;
+    margin-bottom: 16px;
+  }
+
+  .legal-notice-content h2 {
+    font-size: 1.1rem;
+    margin-top: 20px;
+  }
+
+  .legal-info-box {
+    padding: 16px;
+    margin: 16px 0;
+  }
+
+  .legal-copyright {
+    margin-top: 40px;
+  }
+}
+

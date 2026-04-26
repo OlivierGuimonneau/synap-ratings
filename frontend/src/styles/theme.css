@@ -106,34 +106,147 @@ a:hover {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 24px;
 }
 
-.header-inner .hero-badge {
+.header-left {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.logo-wrapper {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: 50px;
+  width: auto;
+}
+
+.header-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.hero-badge {
   background: linear-gradient(135deg, var(--primary), var(--secondary));
   color: var(--bg-white);
-  margin-bottom: 0;
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  display: block;
 }
 
-.header-logo {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--primary);
-}
-
-.header-nav {
+.header-right {
   display: flex;
-  gap: 32px;
+  gap: 16px;
+  align-items: center;
+  flex: 0 0 auto;
 }
 
-.header-nav a {
-  color: var(--text-secondary);
-  font-weight: 500;
-  transition: color 0.3s ease;
+.header-right .button {
+  display: block;
 }
 
-.header-nav a:hover {
-  color: var(--primary);
-  text-decoration: none;
+/* ==================== Hamburger Menu ==================== */
+.hamburger-menu {
+  display: none;
+  flex-direction: column;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  gap: 5px;
+  z-index: 101;
+}
+
+.hamburger-menu span {
+  width: 24px;
+  height: 2.5px;
+  background: var(--text-primary);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.hamburger-menu[aria-expanded="true"] span:nth-child(1) {
+  transform: rotate(45deg) translateY(8px);
+}
+
+.hamburger-menu[aria-expanded="true"] span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger-menu[aria-expanded="true"] span:nth-child(3) {
+  transform: rotate(-45deg) translateY(-8px);
+}
+
+/* ==================== Mobile Menu ==================== */
+.mobile-menu {
+  display: none;
+  background: var(--bg-white);
+  border-top: 1px solid var(--border);
+  padding: 16px 24px;
+  gap: 12px;
+}
+
+.mobile-menu-button {
+  width: 100%;
+  text-align: center;
+}
+
+/* ==================== Responsive Header ==================== */
+@media (max-width: 768px) {
+  .header-inner {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .header-left {
+    width: 100%;
+    justify-content: center;
+    flex: 0 0 auto;
+  }
+
+  .header-center {
+    width: 100%;
+    flex: 0 0 auto;
+  }
+
+  .hero-badge {
+    display: block;
+    text-align: center;
+  }
+
+  .header-right {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0;
+    flex: 0 0 auto;
+  }
+
+  .header-right .button {
+    display: none;
+  }
+
+  .hamburger-menu {
+    display: flex;
+  }
+
+  .mobile-menu {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    order: 3;
+  }
 }
 
 /* ==================== Hero Section ==================== */
@@ -176,7 +289,7 @@ a:hover {
   margin: 0 auto;
 }
 
-.hero-badge {
+.hero-section-badge {
   display: inline-block;
   background: rgba(255, 255, 255, 0.2);
   color: var(--bg-white);
@@ -217,7 +330,8 @@ a:hover {
 .context-section,
 .form-section,
 .closing-cta {
-  padding: 64px 24px;
+  width: 100%;
+  padding: 64px 0;
 }
 
 .value-section {
@@ -245,6 +359,22 @@ a:hover {
 .closing-cta {
   background: var(--bg-light);
   text-align: center;
+}
+
+.closing-cta .container {
+  padding: 64px 24px;
+}
+
+.closing-cta h2 {
+  font-size: 2.25rem;
+  margin-bottom: 24px;
+  color: var(--text-primary);
+}
+
+.closing-cta p {
+  font-size: 1.125rem;
+  margin-bottom: 32px;
+  color: var(--text-secondary);
 }
 
 .section-title {
@@ -431,6 +561,10 @@ a:hover {
 }
 
 /* ==================== Form Section ==================== */
+.form-section .container {
+  padding: 64px 24px;
+}
+
 .form-wrapper {
   max-width: 600px;
   margin: 0 auto;
@@ -599,6 +733,17 @@ a:hover {
   box-shadow: none;
 }
 
+.button-secondary {
+  background: var(--bg-neutral);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.button-secondary:hover {
+  background: var(--border);
+  color: var(--text-primary);
+}
+
 .button-lg {
   padding: 16px 32px;
   font-size: 1rem;
@@ -635,11 +780,29 @@ a:hover {
   font-size: 0.9rem;
 }
 
+.footer div {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.footer p {
+  margin: 0;
+  color: var(--bg-light);
+}
+
 .footer a {
   color: var(--primary-light);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
 }
 
 .footer a:hover {
+  color: var(--bg-light);
   text-decoration: underline;
 }
 
