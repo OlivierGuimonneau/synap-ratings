@@ -2,13 +2,10 @@
 FROM node:20-slim AS frontend-builder
 ARG VITE_RECAPTCHA_SITE_KEY
 ARG VITE_RECAPTCHA_ACTION
-WORKDIR /app
-COPY package*.json ./
-COPY frontend/ ./frontend/
-RUN npm ci --workspaces --include-workspace-root
 WORKDIR /app/frontend
+COPY frontend/package*.json ./
 RUN npm ci
-RUN npm rebuild --force
+COPY frontend/ ./
 RUN VITE_RECAPTCHA_SITE_KEY=${VITE_RECAPTCHA_SITE_KEY} VITE_RECAPTCHA_ACTION=${VITE_RECAPTCHA_ACTION} npm run build
 
 # Stage 2: Build backend
