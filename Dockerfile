@@ -1,5 +1,5 @@
 # Stage 1: Build frontend
-FROM node:20-alpine AS frontend-builder
+FROM node:20-slim AS frontend-builder
 ARG VITE_RECAPTCHA_SITE_KEY
 ARG VITE_RECAPTCHA_ACTION
 WORKDIR /app
@@ -10,7 +10,7 @@ WORKDIR /app/frontend
 RUN VITE_RECAPTCHA_SITE_KEY=${VITE_RECAPTCHA_SITE_KEY} VITE_RECAPTCHA_ACTION=${VITE_RECAPTCHA_ACTION} npm run build
 
 # Stage 2: Build backend
-FROM node:20-alpine AS backend-builder
+FROM node:20-slim AS backend-builder
 WORKDIR /app
 COPY package*.json ./
 COPY backend/ ./backend/
@@ -19,7 +19,7 @@ WORKDIR /app/backend
 RUN npm run build && npm prune --omit=dev
 
 # Stage 3: Runtime
-FROM node:20-alpine AS runtime
+FROM node:20-slim AS runtime
 WORKDIR /app
 
 # Environment
