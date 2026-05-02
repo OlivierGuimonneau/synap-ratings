@@ -1,36 +1,59 @@
-# Stage 1: Build frontend
+# Stage 1: Install dependencies for workspaces
+FROM node:20-alpine AS deps
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+COPY frontend/package.json ./frontend/package.json
+COPY backend/package.json ./backend/package.json
+
+RUN npm ci
+
+# Stage 2: Build frontend
 FROM node:20-alpine AS frontend-builder
 ARG VITE_RECAPTCHA_SITE_KEY
 ARG VITE_RECAPTCHA_ACTION
-WORKDIR /app/frontend
-COPY frontend/package*.json ./
-RUN npm ci
-COPY frontend/ ./
-RUN VITE_RECAPTCHA_SITE_KEY=${VITE_RECAPTCHA_SITE_KEY} VITE_RECAPTCHA_ACTION=${VITE_RECAPTCHA_ACTION} npm run build
+WORKDIR /app
 
-# Stage 2: Build backend
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/package.json ./package.json
+COPY --from=deps /app/package-lock.json ./package-lock.json
+COPY --from=deps /app/frontend/package.json ./frontend/package.json
+COPY --from=deps /app/backend/package.json ./backend/package.json
+
+COPY frontend ./frontend
+COPY backend ./backend
+
+RUN VITE_RECAPTCHA_SITE_KEY=${VITE_RECAPTCHA_SITE_KEY} \
+    VITE_RECAPTCHA_ACTION=${VITE_RECAPTCHA_ACTION} \
+    npm run build -w frontend
+
+# Stage 3: Build backend
 FROM node:20-alpine AS backend-builder
-WORKDIR /app/backend
-COPY backend/package*.json ./
-RUN npm ci
-COPY backend/ ./
-RUN npm run build && npm prune --omit=dev
+WORKDIR /app
 
-# Stage 3: Runtime
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/package.json ./package.json
+COPY --from=deps /app/package-lock.json ./package-lock.json
+COPY --from=deps /app/frontend/package.json ./frontend/package.json
+COPY --from=deps /app/backend/package.json ./backend/package.json
+
+COPY frontend ./frontend
+COPY backend ./backend
+
+RUN npm run build -w backend && npm prune --omit=dev --workspaces=false
+
+# Stage 4: Runtime
 FROM node:20-alpine AS runtime
 WORKDIR /app
 
-# Environment
 ENV NODE_ENV=production
 ENV PORT=5000
 
-# Copy artifacts from builders
 COPY --from=backend-builder /app/backend/dist ./backend/dist
-COPY --from=backend-builder /app/backend/node_modules ./backend/node_modules
 COPY --from=backend-builder /app/backend/package.json ./backend/package.json
+COPY --from=backend-builder /app/node_modules ./node_modules
 COPY --from=frontend-builder /app/frontend/dist ./frontend-dist
 
-# Health check
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
   CMD node -e "require('http').get('http://127.0.0.1:' + (process.env.PORT || 5000) + '/api/health', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"
 
