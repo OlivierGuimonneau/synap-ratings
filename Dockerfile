@@ -8,7 +8,7 @@ COPY frontend/ ./frontend/
 RUN npm ci --workspaces --include-workspace-root
 WORKDIR /app/frontend
 RUN npm ci
-RUN npm rebuild
+RUN npm rebuild --force
 RUN VITE_RECAPTCHA_SITE_KEY=${VITE_RECAPTCHA_SITE_KEY} VITE_RECAPTCHA_ACTION=${VITE_RECAPTCHA_ACTION} npm run build
 
 # Stage 2: Build backend
