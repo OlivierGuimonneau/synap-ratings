@@ -1,4 +1,4 @@
-FROM node:20-alpine AS builder
+FROM node:20-bookworm-slim AS builder
 WORKDIR /app
 
 COPY package.json package-lock.json ./
@@ -18,7 +18,7 @@ ENV VITE_RECAPTCHA_ACTION=$VITE_RECAPTCHA_ACTION
 RUN npm run build -w frontend
 RUN npm run build -w backend
 
-FROM node:20-alpine AS runtime
+FROM node:20-bookworm-slim AS runtime
 WORKDIR /app
 
 ENV NODE_ENV=production
