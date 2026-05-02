@@ -10,6 +10,8 @@ RUN npm ci
 COPY frontend ./frontend
 COPY backend ./backend
 
+RUN npm install --include=optional -w frontend
+
 ARG VITE_RECAPTCHA_SITE_KEY
 ARG VITE_RECAPTCHA_ACTION
 ENV VITE_RECAPTCHA_SITE_KEY=$VITE_RECAPTCHA_SITE_KEY
