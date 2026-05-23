@@ -238,6 +238,11 @@ export function LeadForm() {
         En soumettant ce formulaire, vous acceptez que vos informations soient utilisées pour
         vous recontacter dans le cadre de votre demande.
       </p>
+      <p className="form-delivery-notice">
+        Votre rapport personnalisé vous sera envoyé sous 72h maximum. Pour être sûr de le recevoir,
+        ajoutez <strong>olivier@synapflows.fr</strong> à vos contacts et pensez à vérifier vos
+        courriers indésirables.
+      </p>
     </form>
   );
 }

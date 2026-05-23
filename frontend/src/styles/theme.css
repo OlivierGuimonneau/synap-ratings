@@ -675,6 +675,19 @@ a:hover {
   margin-top: 16px;
 }
 
+.form-delivery-notice {
+  font-size: 0.75rem;
+  color: var(--text-light);
+  text-align: center;
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+.form-delivery-notice strong {
+  color: var(--text-muted, var(--text-light));
+  font-weight: 600;
+}
+
 .form-message {
   margin-top: 16px;
   padding: 16px;
